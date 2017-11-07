@@ -39,24 +39,21 @@ public class Agent {
 		// String logFile = args[3];
 
 		// WRITE YOUR CODE DOWN HERE:
-		// State inital = new State(mapFile);
-		// inital.doCommandAndLog(commandsFile);
+		State inital = new State("simple.map.txt");
+		try{
+			
+		 Scanner in = new Scanner(new File("simple.map.command.txt"));
 
-		// State s = new State("simple.map.txt");
-		File f = new File("simple.map.txt");
-		Scanner in = new Scanner(f);
-		
-		
-		// String str = "";
-		// while(in.hasNextLine()){
-		// str = str+in.nextLine();
-		// }
-		// System.out.println(str);
+		 while(in.hasNext()){
+			 inital.writeLogs("logsFilename.txt", inital.doCommandAndLog(in.next()));
+			 inital.display();
+		 }
+		 in.close();
+		}catch(Exception e){
+			System.out.println(e.getStackTrace());
+		}
 
-		// ....
-		// String s[] = Status.valu
-		// System.out.println(Status.);
-		System.out.println(Status.EMPTY);
+
 	}
 
 }

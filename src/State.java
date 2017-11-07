@@ -15,16 +15,23 @@ public class State {
 	// THAT YOU NEED TO PUT IN A STATE.
 	// YOU SHOULD CHANGE IT:
 
+	enum Status {
+		EMPTY_NOTHING,
+		EMPTY_ROBOT,
+		EMPTY_TREASURE,
+		EMPTY_TREASURE_ROBOT,
+		HOLE_NOTHING,
+		HOLE_ROBOT,
+		HOLE_TREASURE,
+		HOLE_ROBOT_TREASURE
+	}
+
 	private int x; // index R at row
 	private int y; // index R at column
 	private char[][] map; // THE MAP
 	private int N;
 	private int M;
-
-	enum Status {
-		empty, 
-		hole,
-	}
+	public Status status;
 
 	// -----------------------------
 
@@ -44,10 +51,10 @@ public class State {
 				str = str + in.nextLine();
 			}
 			map = new char[N][M];
-			int sizeArray = x * y;
+			int sizeArray = N * M;
 			int k = 0;
-			for (int i = 0; i < x; i++) {
-				for (int j = 0; j < y; j++) {
+			for (int i = 0; i < N; i++) {
+				for (int j = 0; j < M; j++) {
 					if (k <= sizeArray - 1)
 						map[i][j] = str.charAt(k++);
 				}
@@ -56,7 +63,7 @@ public class State {
 		} catch (InputMismatchException e) {
 			System.out.println(e.fillInStackTrace());
 		}
-
+		status = Status.EMPTY_ROBOT;
 	}
 
 	// CONSTRUCTOR 2:
@@ -68,7 +75,7 @@ public class State {
 	// CONSTRUCTOR 3:
 	// COPY CONSTRUCTOR.
 	State(State s) {
-		if(Status.empty )
+
 		x = s.x;
 		y = s.y;
 		// ...
@@ -122,55 +129,98 @@ public class State {
 
 	// YOU CAN ADD MORE ACTIONS HERE.
 
-	//this method return void, it can return map after change it
-	public void move_N(){
-		if(x != 0){
-			if(map[x][y] != 'H'){
+	public void changeStatus(Status status){
+		switch(status){
+		case EMPTY_NOTHING: 
+			map[x][y] = ' ';
+			break;
+		case EMPTY_ROBOT: 
+			map[x][y] = 'R';
+			break;
+		case EMPTY_TREASURE:
+			map[x][y] = 'T';
+			break;
+		case EMPTY_TREASURE_ROBOT:
+			map[x][y] = 'U';
+			break;
+		case HOLE_NOTHING:
+			map[x][y] = 'H';
+			break;
+		case HOLE_ROBOT:
+			map[x][y] = 'X';
+			break;
+		case HOLE_TREASURE:
+			map[x][y] = 'Y';
+			break;
+		case HOLE_ROBOT_TREASURE:
+			map[x][y] = 'Z';
+			break;
+			default:
+				System.out.println("Error on change Status");
+		}
+	}
+	public char currentCell(){
+		return map[x][y];
+	}
+	// this method return void, it can return boolean
+	public boolean move_N() {
+		if (x != 0) {
+			if (map[x][y] != 'H') {
+				changeStatus(Status.EMPTY_NOTHING);
 				x--;
-				write on log file {DONE}
+				changeStatus(Status.EMPTY_ROBOT);
+				return true;
+			} else {
+				changeStatus(Status.EMPTY_ROBOT);
+				return false;
 			}
-			else
-				write on log file {HOLE}
-		}
-		else
-			write on log file {FAIL}
+		} else
+			return false;
 	}
-	//this method return void, it can return map after change it
-	public void move_S(){
-		if(x != N)
-			if(map[x][y] != 'H'){
+
+	// this method return void, it can return boolean
+	public boolean move_S() {
+		if (x != N) {
+			if (map[x][y] != 'H') {
 				x++;
-				write on log file {DONE}
+				status = Status.EMPTY;
+				return true;
+			} else {
+				status = Status.HOLE;
+				return false;
 			}
-			else
-				write on log file {HOLE}
-		else
-			write on log file {FAIL}
+		} else
+			return false;
 	}
-	//this method return void, it can return map after change it
-	public void move_E(){
-		if(y != M){
-			if(map[x][y] != 'H'){
+
+	// this method return void, it can return boolean
+	public boolean move_E() {
+		if (y != M) {
+			if (map[x][y] != 'H') {
 				y++;
-				write on log file {DONE}
-			}else{
-				write on log file {HOLE}
+				status = Status.EMPTY;
+				return true;
+			} else {
+				status = Status.HOLE;
+				return false;
 			}
-		}else{
-			write on log file {FAIL}
-		}
+		} else
+			return false;
 	}
-	//this method return void, it can return map after change it
-	public void move_W(){
-		if(y != 0){
-			if(map[x][y] != 'H'){
+
+	// this method return void, it can return boolean
+	public boolean move_W() {
+		if (y != 0) {
+			if (map[x][y] != 'H') {
 				y--;
-				write on log file {DONE}
-			}else{
-				write on log file {HOLE}
+				status = Status.EMPTY;
+				return true;
+			} else {
+				status = Status.HOLE;
+				return false;
 			}
-		}else
-			write on log file {FAIL}
+		} else
+			return false;
 	}
 	// ...
 
@@ -186,7 +236,12 @@ public class State {
 
 	// DISPLAY THE STATE
 	public void display() {
-		// ...
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < M; j++) {
+				System.out.print(map[i][j]);
+			}
+			System.out.println();
+		}
 	}
 
 	// THIS METHOD WILL DO the GIVEN COMMAND
@@ -194,20 +249,59 @@ public class State {
 	public String doCommandAndLog(String cmd) {
 		String log = "ERROR";
 		switch (cmd) {
-		 case "move-N" : move_N(); break;
-		 case "move-S" : move_S(); break;
-		 case "move-E" : move_E(); break;
-		 case "move-W" : move_W(); break;
+		case "move-N":
+			if (move_N()) {
+				log = "DONE";
+			} else {
+				if (status == Status.EMPTY)
+					log = "FAIL";
+				else
+					log = "HOLE";
+			}
+			break;
+		case "move-S":
+			if (move_S()) {
+				log = "DONE";
+			} else {
+				if (status == Status.EMPTY)
+					log = "FAIL";
+				else
+					log = "HOLE";
+			}
+			break;
+		case "move-E":
+			if (move_E()) {
+				log = "DONE";
+			} else {
+				if (status == Status.EMPTY)
+					log = "FAIL";
+				else
+					log = "HOLE";
+			}
+			break;
+		case "move-W":
+			if (move_W()) {
+				log = "DONE";
+			} else {
+				if (status == Status.EMPTY)
+					log = "FAIL";
+				else
+					log = "HOLE";
+			}
+			break;
 		}
 		return log;
 	}
 
 	// THIS METHOD WILL WRITE THE GIVEN LOGS INTO A FILE
-	public void writeLogs(String logsFilename, String logs) throws FileNotFoundException {
-		File f = new File(logsFilename);
-		FileInputStream fs = new FileInputStream(f);
-		BufferedInputStream b = new BufferedInputStream(fs);
-		
+	public void writeLogs(String logsFilename, String logs) {
+		try {
+			FileWriter b = new FileWriter(new File(logsFilename), true);
+			b.write(logs + "\n");
+			b.close();
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
 	}
 
 	// -----------------------------
