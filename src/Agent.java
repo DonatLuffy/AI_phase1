@@ -6,23 +6,8 @@
 // ID: ...................
 
 import java.io.*;
-import java.util.*;
 
 public class Agent {
-	// enum Status {
-	// EMPTY {
-	// char nothing = ' ';
-	// char robot = 'R';
-	// char treasure = 'T';
-	// char robotAndTreasure = 'U';
-	// },
-	// HOLE {
-	// char nothing = 'H';
-	// char robot = 'X';
-	// char treasure = 'Y';
-	// char robotAndTreasure = 'Z';
-	// }
-	// }
 
 	public static void main(String[] args) throws FileNotFoundException {
 
@@ -40,7 +25,13 @@ public class Agent {
 		// WRITE YOUR CODE DOWN HERE:
 		State inital = new State(mapFile);
 		inital.run(commandsFile, finalMapFile, logFile);
-
+		for (int i = 0; i < inital.getN(); i++) {
+			for(int j=0; j<inital.getM();j++){
+				System.out.print(inital.alt[i][j]);
+			}
+			System.out.println();
+		}
+		System.out.println(State.battery);
 	}
 
 }

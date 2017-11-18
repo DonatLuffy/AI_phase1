@@ -14,12 +14,34 @@ public class State {
 	// THAT YOU NEED TO PUT IN A STATE.
 	// YOU SHOULD CHANGE IT:
 
-	public static int battery = 10;
+	// enum Status {
+	// EMPTY, HOLE,
+	// }
+	//
+	// enum Altitude {
+	// HIGHER(-1), NORMAL(0), LOWER(+1);
+	//
+	// private int alt;
+	// Altitude(int alt) {
+	// this.alt = alt;
+	// }
+	// public int getAltitude(){
+	// return alt;
+	// }
+	// }
+	public static final int HIGHER = -1;
+	public static final int NORMAL = 0;
+	public static final int LOWER = +1;
+	public int list[] = { HIGHER, NORMAL, LOWER };
+
+	public static int battery = 100;
 	public static final char chargeStation = 'S';
 
 	private int x; // index R at row
 	private int y; // index R at column
 	private char[][] map; // THE MAP
+	// private Altitude[][] alt;
+	public int[][] alt;
 	private int N;
 	private int M;
 
@@ -53,8 +75,18 @@ public class State {
 		} catch (InputMismatchException e) {
 			System.out.println(e.fillInStackTrace());
 		}
+
+		
+		alt = new int[N][M];
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < M; j++) {
+				alt[i][j] = list[new Random().nextInt(list.length)];
+			}
+		}
+
 	}
 
+	public
 	// CONSTRUCTOR 2:
 	// THIS CONSTRUCTOR WILL CREATE A RANDOM STATE.
 	State(int n, int m, int rseed) {
@@ -122,7 +154,8 @@ public class State {
 		try {
 			Scanner in = new Scanner(new File(command));
 			while (in.hasNext() && battery > 0) {
-				writeLogs(log, Booster_moves(in.next()));
+				battery += alt[x][y];//robot will spend HIGHER or LOWER or NORMAL altitude cell 
+				writeLogs(log, doCommandAndLog(in.next()));
 				if (fallInHole())
 					writeLogs(log, "HOLE");
 				if (foundTreasure())
@@ -149,7 +182,9 @@ public class State {
 	}
 
 	public boolean move_N_B() {
-		battery -= 3;
+		if (battery == 0)
+			return false;
+		battery--;
 		if (move_N() && move_N())
 			return true;
 		else
@@ -157,7 +192,9 @@ public class State {
 	}
 
 	public boolean move_S_B() {
-		battery -= 3;
+		if (battery == 0)
+			return false;
+		battery--;
 		if (move_S() && move_S())
 			return true;
 		else
@@ -165,7 +202,9 @@ public class State {
 	}
 
 	public boolean move_E_B() {
-		battery -= 3;
+		if (battery == 0)
+			return false;
+		battery--;
 		if (move_E() && move_E())
 			return true;
 		else
@@ -173,14 +212,16 @@ public class State {
 	}
 
 	public boolean move_W_B() {
-		battery -= 3;
+		if (battery == 0)
+			return false;
+		battery--;
 		if (move_W() && move_W())
 			return true;
 		else
 			return false;
 	}
 
-	public String Booster_moves(String cmd) {
+	public String booster_Moves(String cmd) {
 		String log = "ERROR";
 		switch (cmd) {
 		case "move-N":
@@ -244,6 +285,9 @@ public class State {
 
 	// this method return void, it can return boolean
 	public boolean move_N() {
+		if (battery == 0)
+			return false;
+		battery--;
 		if (x == 0)
 			return false;
 		else if (map[x][y] == 'X' || map[x][y] == 'Z')
@@ -260,6 +304,9 @@ public class State {
 
 	// this method return void, it can return boolean
 	public boolean move_S() {
+		if (battery == 0)
+			return false;
+		battery--;
 		if (x == N - 1)
 			return false;
 		else if (map[x][y] == 'X' || map[x][y] == 'Z')
@@ -276,6 +323,9 @@ public class State {
 
 	// this method return void, it can return boolean
 	public boolean move_E() {
+		if (battery == 0)
+			return false;
+		battery--;
 		if (y == M - 1)
 			return false;
 		else if (map[x][y] == 'X' || map[x][y] == 'Z')
@@ -292,6 +342,9 @@ public class State {
 
 	// this method return void, it can return boolean
 	public boolean move_W() {
+		if (battery == 0)
+			return false;
+		battery--;
 		if (y == 0)
 			return false;
 		else if (map[x][y] == 'X' || map[x][y] == 'Z')
