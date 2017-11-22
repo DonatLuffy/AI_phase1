@@ -1,6 +1,6 @@
  BHB B
- B    
+RB    
  B B B
-R  B H
+   B H
  BBB B
   HB T

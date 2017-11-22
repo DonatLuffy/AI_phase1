@@ -25,13 +25,7 @@ public class Agent {
 		// WRITE YOUR CODE DOWN HERE:
 		State inital = new State(mapFile);
 		inital.run(commandsFile, finalMapFile, logFile);
-		for (int i = 0; i < inital.getN(); i++) {
-			for(int j=0; j<inital.getM();j++){
-				System.out.print(inital.alt[i][j]);
-			}
-			System.out.println();
-		}
-		System.out.println(State.battery);
+		
 	}
 
 }

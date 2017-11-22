@@ -1,3 +1,2 @@
 move-S
-move-S
-move-S
+move-W

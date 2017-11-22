@@ -434,7 +434,7 @@ public class State {
 	// THIS METHOD WILL WRITE THE GIVEN LOGS INTO A FILE
 	public void writeLogs(String logsFilename, String logs) {
 		try {
-			FileWriter b = new FileWriter(new File(logsFilename), true);
+			FileWriter b = new FileWriter(new File(logsFilename),true);
 			b.write(logs + "\n");
 			b.close();
 		} catch (Exception e) {
