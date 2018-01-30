@@ -1,3 +1,3 @@
 # AI_phase1
 
-This is my porject on artificial intelligence
+This is my porject about artificial intelligence
